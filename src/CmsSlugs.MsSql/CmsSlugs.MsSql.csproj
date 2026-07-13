@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- netstandard2.0 so it is consumable by CMS 11 (.NET Framework) and CMS 12 (.NET 6+). -->
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>CmsSlugs.MsSql</PackageId>
+    <Description>SQL Server storage provider for CmsSlugs: a durable ISlugStore backed by a single table with Data as a JSON column.</Description>
+    <PackageTags>slug;sqlserver;mssql;routing;index;storage</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CmsSlugs\CmsSlugs.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <!-- IServiceCollection + Add/TryAdd/RemoveAll for the DI extension. Not in the netstandard BCL. -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="schema.sql" Pack="true" PackagePath="contentFiles\any\any\schema.sql" />
+  </ItemGroup>
+
+</Project>

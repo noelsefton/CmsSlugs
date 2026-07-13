@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- netstandard2.0 so it is consumable by CMS 11 (.NET Framework) and CMS 12 (.NET 6+). -->
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>CmsSlugs.Redis</PackageId>
+    <Description>Redis storage provider for CmsSlugs: a durable ISlugStore using a hash per slug, with a reverse set for RemoveByContent.</Description>
+    <PackageTags>slug;redis;routing;index;storage</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CmsSlugs\CmsSlugs.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
+    <!-- IServiceCollection + Add/TryAdd/RemoveAll for the DI extension. Not in the netstandard BCL. -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+  </ItemGroup>
+
+</Project>

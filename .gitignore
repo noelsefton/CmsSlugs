@@ -1,0 +1,75 @@
+# ---------------------------------------------------------------------------
+# .gitignore — CmsSlugs (.NET / NuGet)
+# General-purpose ignore list. Keep it tidy and grouped by category.
+# ---------------------------------------------------------------------------
+
+# --- Build output ---
+bin/
+obj/
+out/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+build/
+publish/
+
+# --- NuGet ---
+*.nupkg
+*.snupkg
+# Restored packages folder (we use PackageReference)
+packages/
+# Keep packages.config if you have one; ignore the restored content only
+.nuget/
+project.lock.json
+project.assets.json
+
+# --- .NET / Roslyn / MSBuild ---
+*.user
+*.suo
+*.userprefs
+*.cache
+*.dll.config
+*.binlog
+*.tlog
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# --- Test & coverage ---
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+.coverage/
+
+# --- IDE & editor ---
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS noise ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Secrets & local config ---
+*.env
+.env
+.env.*
+appsettings.*.local.json
+secrets.json
+
+# --- Logs & temp ---
+*.log
+*.tmp
+tmp/
+temp/

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- One source tree, two CMS generations:
+           net472  -> Optimizely/EPiServer CMS 11 (.NET Framework)
+           net6.0  -> Optimizely CMS 12 (.NET 6+)
+         The adapter only uses APIs common to both (IInitializableModule, IContentEvents,
+         ContentReference, EPiServer.Logging, IServiceCollection DI, ScheduledJobBase), so the
+         code is shared and only the EPiServer package version differs per target framework. -->
+    <TargetFrameworks>net472;net6.0</TargetFrameworks>
+    <PackageId>CmsSlugs.Optimizely</PackageId>
+    <Description>Optimizely (EPiServer) CMS adapter for CmsSlugs, supporting CMS 11 (net472) and CMS 12 (net6.0): slug source contract, content-id codec, content-event module with boot scan, rebuild scheduled job and resolver.</Description>
+    <PackageTags>slug;optimizely;episerver;cms11;cms12;routing;index</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CmsSlugs\CmsSlugs.csproj" />
+    <!-- IServiceCollection + TryAdd for AddCmsSlugs(). Neither EPiServer.CMS.Core 11 nor 12 surfaces
+         these at compile time, so reference them directly. 6.0.0 targets net461, so it also loads on
+         .NET Framework 4.7.2. -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+  </ItemGroup>
+
+  <!-- Restore requires the Optimizely NuGet feed (see ../NuGet.config). -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <PackageReference Include="EPiServer.CMS.Core" Version="[11.1.0,12.0.0)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <PackageReference Include="EPiServer.CMS.Core" Version="[12.0.3,13.0.0)" />
+  </ItemGroup>
+
+</Project>
