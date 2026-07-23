@@ -59,6 +59,15 @@ public sealed class InMemorySlugStore : ISlugStore
         _isReady = true;
     }
 
+    public SlugEntry? this[long index]
+    {
+        get
+        {
+            if (index < 0) return null;
+            return _state.Forward.Values.Skip((int)index).FirstOrDefault();
+        }
+    }
+
     private static void SetInternal(State state, SlugEntry entry, bool logCollision)
     {
         var key = SlugKey.Compose(entry.Slug, entry.Culture);

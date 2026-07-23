@@ -35,12 +35,20 @@ public static class SlugIndexBuilder
         diagnostics.SetTotal(links.Count);
 
         var entries = new ConcurrentBag<SlugEntry>();
-        var parallelOptions = new ParallelOptions
-        {
-            MaxDegreeOfParallelism = options.MaxDegreeOfParallelism > 0
+        // A source that can never be read concurrently is scanned serially; otherwise honour the
+        // configured degree (0 => processor count).
+        var maxDop = !source.SupportsConcurrentResolve
+            ? 1
+            : options.MaxDegreeOfParallelism > 0
                 ? options.MaxDegreeOfParallelism
-                : Environment.ProcessorCount
-        };
+                : Environment.ProcessorCount;
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = maxDop };
+
+        // Reading a cold, lazily-built shared cache (e.g. Commerce catalog metadata) from many
+        // threads at once corrupts a non-concurrent collection. Prime it once on this thread before
+        // fanning out so the parallel pass only reads it.
+        if (maxDop > 1)
+            source.WarmUp();
 
         Parallel.ForEach(links, parallelOptions, (link, loopState) =>
         {

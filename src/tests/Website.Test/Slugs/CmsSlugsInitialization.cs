@@ -4,6 +4,7 @@ using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.ServiceLocation;
 using Microsoft.Extensions.DependencyInjection;
+using CmsSlugs.Redis;
 
 namespace Website.Test.Slugs;
 
@@ -26,7 +27,7 @@ public sealed class CmsSlugsInitialization : IConfigurableModule
 
         // --- choose ONE durable store to actually exercise that package (else in-memory is used) ---
         // services.AddCmsSlugsSqlServer("<connection string>");
-        // services.AddCmsSlugsRedis("localhost:6379");
+        services.AddCmsSlugsRedis("localhost:6379");
     }
 
     public void Initialize(InitializationEngine context) { }

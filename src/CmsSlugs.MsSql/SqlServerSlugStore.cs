@@ -112,6 +112,28 @@ public sealed class SqlServerSlugStore : ISlugStore
         }
     }
 
+    public SlugEntry? this[long index]
+    {
+        get
+        {
+            if (index < 0) return null;
+
+            using var conn = Open();
+            using var cmd = new SqlCommand(
+                $"SELECT Culture, Slug, ContentId, Data FROM {_table} " +
+                "ORDER BY Culture, Slug OFFSET @i ROWS FETCH NEXT 1 ROWS ONLY", conn);
+            cmd.Parameters.Add(new SqlParameter("@i", index));
+            using var reader = cmd.ExecuteReader();
+            if (!reader.Read()) return null;
+
+            var c = reader.GetString(0);
+            var s = reader.GetString(1);
+            var id = reader.GetString(2);
+            var data = reader.IsDBNull(3) ? null : DeserializeData(reader.GetString(3));
+            return new SlugEntry(s, c, id, data);
+        }
+    }
+
     private void SetInternal(SqlConnection conn, SqlTransaction? tx, SlugEntry entry)
     {
         var c = SlugKey.NormalizeCulture(entry.Culture);

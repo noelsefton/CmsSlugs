@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Using Include="EPiServer"/>
-    <Using Include="EPiServer.Core"/>
-    <Using Include="EPiServer.DataAbstraction"/>
-    <Using Include="EPiServer.DataAnnotations"/>
+    <Using Include="EPiServer" />
+    <Using Include="EPiServer.Core" />
+    <Using Include="EPiServer.DataAbstraction" />
+    <Using Include="EPiServer.DataAnnotations" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\CmsSlugs.Optimizely\CmsSlugs.Optimizely.csproj" />
+    <ProjectReference Include="..\..\CmsSlugs.Redis\CmsSlugs.Redis.csproj" />
   </ItemGroup>
 
   <ItemGroup>

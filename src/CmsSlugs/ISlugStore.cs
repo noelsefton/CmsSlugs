@@ -27,4 +27,12 @@ public interface ISlugStore
 
     /// <summary>Full, atomic replacement of the index. Marks the store ready.</summary>
     void Rebuild(IEnumerable<SlugEntry> entries);
+
+    /// <summary>
+    /// The entry at ordinal <paramref name="index"/> in the index, or null when out of range. For
+    /// display and diagnostics only — NOT the hot path. Ordering is unspecified but stable within a
+    /// single call; do not treat the position as meaningful. Cost varies by store: in-memory and SQL
+    /// are positional, but the Redis set is unordered so each access materializes the key set (O(N)).
+    /// </summary>
+    SlugEntry? this[long index] { get; }
 }
