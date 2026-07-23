@@ -19,6 +19,7 @@
          these at compile time, so reference them directly. 6.0.0 targets net461, so it also loads on
          .NET Framework 4.7.2. -->
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
   </ItemGroup>
 
   <!-- Restore requires the Optimizely NuGet feed (see ../NuGet.config). -->
@@ -28,6 +29,8 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <PackageReference Include="EPiServer.CMS.Core" Version="[12.0.3,13.0.0)" />
+    <!-- Endpoint diagnostics extension (MapCmsSlugsDiagnostics) is CMS 12 / ASP.NET Core only. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>

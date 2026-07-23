@@ -1,0 +1,65 @@
+@using CmsSlugs
+@model Website.Test.Models.Pages.StartPage
+@{
+    Layout = null;
+    var slugsReady = (bool)ViewData["SlugsReady"]!;
+    var slugCount = (long)ViewData["SlugCount"]!;
+    var examples = (IReadOnlyList<SlugEntry>)ViewData["SlugExamples"]!;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@(Model.Heading ?? Model.Name)</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 46rem; margin: 3rem auto; padding: 0 1rem; line-height: 1.5; }
+        code { background: #f2f2f2; padding: 0.1rem 0.3rem; border-radius: 3px; }
+        li { margin: 0.4rem 0; }
+        .muted { color: #666; }
+    </style>
+</head>
+<body>
+    <h1>@(Model.Heading ?? Model.Name)</h1>
+    <p>Optimizely CMS 12 + Commerce 14 test site for the CmsSlugs packages.</p>
+
+    <h2>Example URLs to test</h2>
+    @if (!slugsReady)
+    {
+        <p>Slug index is <strong>not ready</strong> yet. Run <strong>Rebuild Slug Index</strong>
+           (Admin &rarr; Scheduled Jobs), then reload this page.</p>
+    }
+    else if (examples.Count == 0)
+    {
+        <p>Index is ready but empty (@slugCount entries). Run <strong>Generate Random Products</strong>,
+           then <strong>Rebuild Slug Index</strong>, then reload.</p>
+    }
+    else
+    {
+        <p>Index is ready — @slugCount entries. Five randomly picked slugs to try (reload for a fresh set):</p>
+        <ul>
+            @foreach (var e in examples)
+            {
+                var title = e.Data != null && e.Data.TryGetValue("title", out var t) ? t : null;
+                <li>
+                    <a href="/@e.Slug">/@e.Slug</a>
+                    <span class="muted">@e.Culture@(title is null ? "" : " — " + title)</span>
+                </li>
+            }
+        </ul>
+    }
+
+    <h2>Links</h2>
+    <ul>
+        <li><a href="/episerver/cms">CMS edit UI</a> (first run: create an admin at <a href="/util/register">/util/register</a>)</li>
+        <li><a href="/cmsslugs/status">CmsSlugs status</a> — index count, readiness, optional <code>?slug=&amp;culture=</code> sample resolve</li>
+    </ul>
+
+    <h2>Harness loop</h2>
+    <ol>
+        <li>Admin &rarr; Scheduled Jobs &rarr; run <strong>Generate Random Products</strong> (scheduler is disabled in dev; start it manually).</li>
+        <li>Run <strong>Rebuild Slug Index</strong> and note the duration.</li>
+        <li>Check <a href="/cmsslugs/status">/cmsslugs/status</a>, then browse <code>/{product-slug}</code> — it should resolve via CmsSlugs, not Find.</li>
+    </ol>
+</body>
+</html>

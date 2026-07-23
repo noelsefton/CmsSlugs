@@ -1,5 +1,6 @@
 using EPiServer.PlugIn;
 using EPiServer.Scheduler;
+using Microsoft.Extensions.Options;
 
 namespace CmsSlugs.Optimizely;
 
@@ -16,12 +17,16 @@ public sealed class RebuildSlugIndexJob : ScheduledJobBase
 {
     private readonly ISlugStore _store;
     private readonly ISlugSource _source;
+    private readonly SlugIndexDiagnostics _diagnostics;
+    private readonly SlugIndexOptions _options;
     private bool _stopRequested;
 
-    public RebuildSlugIndexJob(ISlugStore store, ISlugSource source)
+    public RebuildSlugIndexJob(ISlugStore store, ISlugSource source, SlugIndexDiagnostics diagnostics, IOptions<SlugIndexOptions> options)
     {
         _store = store;
         _source = source;
+        _diagnostics = diagnostics;
+        _options = options.Value;
         IsStoppable = true;
     }
 
@@ -31,21 +36,12 @@ public sealed class RebuildSlugIndexJob : ScheduledJobBase
     {
         _stopRequested = false;
 
-        long count = 0;
-        _store.Rebuild(Counting(_source.GetAll(), () => count++));
+        SlugIndexBuilder.Rebuild(_store, _source, _diagnostics, _options, stopRequested: () => _stopRequested);
+        var count = _diagnostics.LastBuildEntryCount ?? _store.Count;
 
         return _stopRequested
             ? $"Stop requested. Index rebuilt with {count:N0} entries before stopping."
             : $"Index rebuilt: {count:N0} entries.";
     }
 
-    private IEnumerable<SlugEntry> Counting(IEnumerable<SlugEntry> source, Action onItem)
-    {
-        foreach (var entry in source)
-        {
-            if (_stopRequested) yield break;
-            onItem();
-            yield return entry;
-        }
-    }
 }
